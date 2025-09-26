@@ -8,6 +8,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { createClient } from "@/lib/supabase/client";
+import { EllipsisVertical, Save } from "lucide-react";
+import BoardSidebar from "./BoardSidebar";
 
 const initialNodes = [
   {
@@ -196,7 +198,8 @@ export default function Board() {
   );
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
+    <div className="flex " style={{ width: "100vw", height: "100vh" }}>
+      <BoardSidebar />
       <ReactFlow
         nodes={nodes}
         edges={edges}
