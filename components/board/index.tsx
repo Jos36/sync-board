@@ -8,7 +8,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { createClient } from "@/lib/supabase/client";
-import { EllipsisVertical, Save } from "lucide-react";
+// import { EllipsisVertical, Save } from "lucide-react";
 import BoardSidebar from "./BoardSidebar";
 
 const initialNodes = [

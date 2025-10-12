@@ -17,9 +17,12 @@ export default async function ProtectedPage() {
 
   const { data: boardsData, error: boardsError } = await supabase
     .from("boards")
-    .select();
-  // .eq("userId", data.claims.sub);
+    .select()
+    .eq("userId", data.claims.sub);
   console.log(boardsData, boardsError);
+
+  // if (boardsData.length > 0) {
+  // }
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
