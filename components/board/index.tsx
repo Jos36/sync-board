@@ -10,6 +10,15 @@ import "@xyflow/react/dist/style.css";
 import { createClient } from "@/lib/supabase/client";
 // import { EllipsisVertical, Save } from "lucide-react";
 import BoardSidebar from "./BoardSidebar";
+import { RealtimeChannel } from "@supabase/supabase-js";
+
+interface Nodes {
+  id: string;
+  position: { x: number; y: number };
+  data: { label: string; draggingUserId: boolean | string };
+  style: { color: string };
+  dragging: boolean;
+}
 
 const initialNodes = [
   {
@@ -24,16 +33,16 @@ const initialNodes = [
     data: { label: "Node 2", draggingUserId: false },
     style: { color: "#000000" },
   },
-];
+] as Nodes[];
 const initialEdges = [{ id: "n1-n2", source: "n1", target: "n2" }];
 
 export default function Board() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-  const [presenceState, setPresenceState] = useState({});
+  // const [presenceState, setPresenceState] = useState({});
   const [userId] = useState(`user_${Math.random().toString(36).substr(2, 9)}`); // Generate a random user ID
   const supabase = createClient();
-  const channelRef = useRef(null);
+  const channelRef = useRef<RealtimeChannel>(null);
   const EVENT_NAME = "nodes";
 
   useEffect(() => {
@@ -46,7 +55,6 @@ export default function Board() {
         }
         console.log("serverResponse", status);
       });
-
       // Handle presence join event
       // channelRef.current.on(
       //   "presence",
@@ -85,7 +93,7 @@ export default function Board() {
         });
       }
     }
-  }, [nodes]);
+  }, [nodes, supabase, userId]);
 
   // Initialize channel and set up presence event listeners
   // useEffect(() => {
@@ -157,15 +165,15 @@ export default function Board() {
   //   }
   // }, [nodes]);
   //
-  const onlineUsers = Object.entries(presenceState).flatMap(
-    ([key, presences]) =>
-      presences.map((presence) => ({
-        key,
-        user: presence.user,
-        online_at: presence.online_at,
-      })),
-  );
-
+  // const onlineUsers = Object.entries(presenceState).flatMap(
+  //   ([key, presences]) =>
+  //     presences.map((presence) => ({
+  //       key,
+  //       user: presence.user,
+  //       online_at: presence.online_at,
+  //     })),
+  // );
+  //
   const onNodesChange = useCallback((changes) => {
     // console.log(changes);
     // const modifiedChanges = changes.map((change) => {
@@ -190,7 +198,7 @@ export default function Board() {
   const onEdgesChange = useCallback(
     (changes) =>
       setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    [],
+    [userId],
   );
   const onConnect = useCallback(
     (params) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
